@@ -1,6 +1,11 @@
 package com.example.android_demo.models;
 
-public class Customer {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Customer implements Parcelable {
 
     private String phoneNumber;
     private String name;
@@ -14,6 +19,24 @@ public class Customer {
         this.phoneNumber = phoneNumber;
         this.address = address;
     }
+
+    protected Customer(Parcel in) {
+        phoneNumber = in.readString();
+        name = in.readString();
+        address = in.readString();
+    }
+
+    public static final Creator<Customer> CREATOR = new Creator<Customer>() {
+        @Override
+        public Customer createFromParcel(Parcel in) {
+            return new Customer(in);
+        }
+
+        @Override
+        public Customer[] newArray(int size) {
+            return new Customer[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -46,5 +69,18 @@ public class Customer {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(phoneNumber);
+        parcel.writeString(name);
+        parcel.writeString(address);
+
     }
 }

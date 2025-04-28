@@ -2,6 +2,7 @@ package com.example.android_demo;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -89,5 +90,32 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         long result = db.insert(CUSTOMER_TABLE_NAME, null, cv);
         return result > -1;
 
+    }
+
+    public Cursor getCustomers()
+    {
+        String query = "SELECT * FROM " + CUSTOMER_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null)
+        {
+            cursor = db.rawQuery(query,null);
+        }
+        return cursor;
+    }
+
+    public Cursor getCustomerByPhone(String phone)
+    {
+
+        String query = "SELECT * FROM " + CUSTOMER_TABLE_NAME + " WHERE " + CUSTOMER_PHONE+ " = "+phone;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null)
+        {
+            cursor = db.rawQuery(query,null);
+        }
+        return cursor;
     }
 }

@@ -2,6 +2,8 @@ package com.example.android_demo;
 
 import static android.view.View.VISIBLE;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,12 +21,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.android_demo.models.Customer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     Button loginBtn;
     ImageView logoView;
     TextView nameTextView;
     EditText phoneEditText,nameEditText, cityEditText, addressEditText;
+    boolean register = false;
 
     DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
 
@@ -52,28 +58,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String phone = phoneEditText.getText().toString();
                 if(phone != null && phone.matches("\\d{9}")){
-                    //TODO check if exists in customer database
-                    boolean inDb = false;
-                    if(inDb){
-                        String name = "";
-                        String address = "";
-                        String city = "";
-                        Customer customer = new Customer(phone, name,address + "/" + city);
-                        //TODO change activity to menu and pass customer details
-
-                    }else{
-                        //TODO if not then switch to register mode (check if name and address are valid format)
-                        nameEditText.setVisibility(VISIBLE);
-                        addressEditText.setVisibility(VISIBLE);
-                        cityEditText.setVisibility(VISIBLE);
+                    if(!register) {
+                        Customer customer = getCustomerByPhone(phone);
+                        if (customer.getPhoneNumber() != null) {
+                            Log.i("customer details", customer.toString());
+                            switchPage(customer);
+                        } else {
+                            loginBtn.setText("Register");
+                            nameEditText.setVisibility(VISIBLE);
+                            addressEditText.setVisibility(VISIBLE);
+                            cityEditText.setVisibility(VISIBLE);
+                            register = true;
+                        }
+                    }else {
                         String name = nameEditText.getText().toString();
                         String address = addressEditText.getText().toString();
                         String city = cityEditText.getText().toString();
                         if(name.length() > 2 && address.length() > 4 && city.length() > 2){
-                            boolean success = dataBaseHelper.addCustomer(new Customer(phone,name,address + "/" + city));
-                            if(success)Log.i("db operation","Customer saved successfully");
-                            else Log.e("db error","failed to insert customer into database");
-                            //TODO change activity to menu and pass customer details
+                            Customer customer = new Customer(phone,name,address + "/" + city);
+                            boolean success = addCutomer(customer);
+                            if(success)Log.i("db operation","Customer " + customer + " saved successfully");
+                            else Log.e("db error","failed to insert customer " + customer + " into database");
+                            switchPage(customer);
+
                         }else{
                             Toast.makeText(MainActivity.this, "Invalid input data.", Toast.LENGTH_SHORT).show();
                         }
@@ -86,4 +93,39 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    void switchPage(Customer customer){
+        Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+        intent.putExtra("customer", customer);
+        startActivity(intent);
+    }
+    List<Customer> getCustomers() {
+        List<Customer> customers = new ArrayList<>();
+        Cursor cursor = dataBaseHelper.getCustomers();
+        if (cursor.getCount() == 0) {
+            Log.w("db operation", "no data to display");
+        } else {
+            while (cursor.moveToNext()) {
+                Customer customer = new Customer(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                customers.add(customer);
+            }
+        }
+        return customers;
+    }
+
+    boolean addCutomer(Customer customer){
+        return dataBaseHelper.addCustomer(customer);
+    }
+
+    Customer getCustomerByPhone(String phone) {
+        Customer customer = new Customer();
+        Cursor cursor = dataBaseHelper.getCustomerByPhone(phone);
+        if (cursor.getCount() != 0 && cursor.moveToNext()) {
+            customer = new Customer(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+        } else {
+            Log.w("db operation","Customer with phone: " + phone + " not found.");
+        }
+        return customer;
+    }
+
 }
