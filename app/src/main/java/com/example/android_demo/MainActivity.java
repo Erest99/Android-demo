@@ -21,9 +21,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.android_demo.models.Customer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     Button loginBtn;
@@ -39,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.cart), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -98,19 +95,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, MenuActivity.class);
         intent.putExtra("customer", customer);
         startActivity(intent);
-    }
-    List<Customer> getCustomers() {
-        List<Customer> customers = new ArrayList<>();
-        Cursor cursor = dataBaseHelper.getCustomers();
-        if (cursor.getCount() == 0) {
-            Log.w("db operation", "no data to display");
-        } else {
-            while (cursor.moveToNext()) {
-                Customer customer = new Customer(cursor.getString(0), cursor.getString(1), cursor.getString(2));
-                customers.add(customer);
-            }
-        }
-        return customers;
     }
 
     boolean addCutomer(Customer customer){

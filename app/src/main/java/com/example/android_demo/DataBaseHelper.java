@@ -11,6 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.android_demo.models.Customer;
+import com.example.android_demo.models.Dish;
+import com.example.android_demo.models.Order;
+
+import java.util.List;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
@@ -92,9 +96,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Cursor getCustomers()
+    public Cursor getDishes()
     {
-        String query = "SELECT * FROM " + CUSTOMER_TABLE_NAME;
+        String query = "SELECT * FROM " + MENU_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
@@ -118,4 +122,45 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return cursor;
     }
+
+    public boolean addMenuItems(List<Dish> dishes)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        for(Dish dish: dishes){
+            cv.put(MENU_NAME,dish.getName());
+            cv.put(MENU_PRICE,dish.getPrice());
+            cv.put(MENU_INFO,dish.getInfo());
+            long result = db.insert(MENU_TABLE_NAME, null, cv);
+            if(result < 0) return false;
+        }
+        return true;
+    }
+
+    public boolean addOrderItems(List<Order> orders)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        for(Order order: orders){
+            cv.put(ORDER_ITEM,order.getItemName());
+            cv.put(ORDER_CUSTOMER_ID,order.getCustomerPhone());
+            cv.put(ORDER_PRICE,order.getPrice());
+            cv.put(ORDER_START,order.getTimeOfOrder());
+            cv.put(ORDER_DUE,order.getDueTime());
+            long result = db.insert(ORDER_TABLE_NAME, null, cv);
+            if(result < 0) return false;
+        }
+        return true;
+    }
+
+    public boolean updateCustomer(Customer customer)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CUSTOMER_NAME, customer.getName());
+        cv.put(CUSTOMER_ADDRESS, customer.getAddress());
+        long result = db.update(CUSTOMER_TABLE_NAME,cv,CUSTOMER_PHONE+"=?",new String[]{customer.getPhoneNumber()});
+        return result > -1;
+    }
+
 }

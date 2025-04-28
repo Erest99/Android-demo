@@ -16,13 +16,6 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/orderItemInfo"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="4dp"/>
-
-    <TextView
         android:id="@+id/orderItemPrice"
         android:textSize="16sp"
         android:textColor="#4CAF50"
@@ -31,10 +24,10 @@
         android:paddingTop="4dp"/>
 
     <Button
-        android:id="@+id/addToCartButton"
+        android:id="@+id/removeBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Add to Cart" />
+        android:text="Remove" />
 
 </LinearLayout>
