@@ -10,11 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.android_demo.models.Customer;
-import com.example.android_demo.models.Dish;
 import com.example.android_demo.models.Order;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.MyViewHolder> {
@@ -66,17 +63,14 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             orderItemInfo = itemView.findViewById(R.id.orderItemInfo);
             removeBtn = itemView.findViewById(R.id.removeBtn);
 
-            removeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Get the position of the clicked item
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        // Remove the item from the list
-                        orders.remove(position);
-                        // Notify the adapter that an item has been removed
-                        notifyItemRemoved(position);
-                    }
+            removeBtn.setOnClickListener(view -> {
+                // Get the position of the clicked item
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    // Remove the item from the list
+                    orders.remove(position);
+                    // Notify the adapter that an item has been removed
+                    notifyItemRemoved(position);
                 }
             });
         }

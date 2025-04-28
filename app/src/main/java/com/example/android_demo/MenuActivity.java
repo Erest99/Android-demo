@@ -39,7 +39,7 @@ public class MenuActivity extends AppCompatActivity {
         orders = getIntent().getParcelableArrayListExtra("orders");
         if(orders != null)Log.i("Intent pass",orders.toString());
         else orders = new ArrayList<>();
-        customer = (Customer) getIntent().getParcelableExtra("customer");
+        customer = getIntent().getParcelableExtra("customer");
         if(customer == null)throw new RuntimeException("Couldnt retrieve customer");
         changeAddressBtn = findViewById(R.id.changeAddressButton);
         confirmOrderBtn = findViewById(R.id.confirmOrderButton);
@@ -50,25 +50,19 @@ public class MenuActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                orders = adapter.getOrders();
-                Intent intent = new Intent(MenuActivity.this, CartActivity.class);
-                intent.putParcelableArrayListExtra("orders", new ArrayList<>(orders));
-                intent.putExtra("customer", customer);
-                startActivity(intent);
-            }
+        confirmOrderBtn.setOnClickListener(view -> {
+            orders = adapter.getOrders();
+            Intent intent = new Intent(MenuActivity.this, CartActivity.class);
+            intent.putParcelableArrayListExtra("orders", new ArrayList<>(orders));
+            intent.putExtra("customer", customer);
+            startActivity(intent);
         });
 
-        changeAddressBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MenuActivity.this, ChangeAddressActivity.class);
-                intent.putExtra("customer", customer);
-                intent.putParcelableArrayListExtra("orders", new ArrayList<>(orders));
-                startActivity(intent);
-            }
+        changeAddressBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MenuActivity.this, ChangeAddressActivity.class);
+            intent.putExtra("customer", customer);
+            intent.putParcelableArrayListExtra("orders", new ArrayList<>(orders));
+            startActivity(intent);
         });
     }
 

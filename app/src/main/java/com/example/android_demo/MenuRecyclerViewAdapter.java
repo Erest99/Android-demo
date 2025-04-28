@@ -14,7 +14,6 @@ import com.example.android_demo.models.Customer;
 import com.example.android_demo.models.Dish;
 import com.example.android_demo.models.Order;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuRecyclerViewAdapter extends RecyclerView.Adapter<MenuRecyclerViewAdapter.MyViewHolder> {
@@ -71,12 +70,9 @@ public class MenuRecyclerViewAdapter extends RecyclerView.Adapter<MenuRecyclerVi
             menuItemInfo = itemView.findViewById(R.id.orderItemInfo);
             addToCartBtn = itemView.findViewById(R.id.addToCartButton);
 
-            addToCartBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Order o = new Order(menuItemName.getText().toString(),customer.getPhoneNumber(),Integer.parseInt(menuItemPrice.getText().toString()));
-                    orders.add(o);
-                }
+            addToCartBtn.setOnClickListener(view -> {
+                Order o = new Order(menuItemName.getText().toString(),customer.getPhoneNumber(),Integer.parseInt(menuItemPrice.getText().toString()));
+                orders.add(o);
             });
         }
     }

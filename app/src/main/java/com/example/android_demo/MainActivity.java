@@ -50,42 +50,39 @@ public class MainActivity extends AppCompatActivity {
         cityEditText = findViewById(R.id.cityEditText);
         addressEditText = findViewById(R.id.addressEditText);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String phone = phoneEditText.getText().toString();
-                if(phone != null && phone.matches("\\d{9}")){
-                    if(!register) {
-                        Customer customer = getCustomerByPhone(phone);
-                        if (customer.getPhoneNumber() != null) {
-                            Log.i("customer details", customer.toString());
-                            switchPage(customer);
-                        } else {
-                            loginBtn.setText("Register");
-                            nameEditText.setVisibility(VISIBLE);
-                            addressEditText.setVisibility(VISIBLE);
-                            cityEditText.setVisibility(VISIBLE);
-                            register = true;
-                        }
-                    }else {
-                        String name = nameEditText.getText().toString();
-                        String address = addressEditText.getText().toString();
-                        String city = cityEditText.getText().toString();
-                        if(name.length() > 2 && address.length() > 4 && city.length() > 2){
-                            Customer customer = new Customer(phone,name,address + "/" + city);
-                            boolean success = addCutomer(customer);
-                            if(success)Log.i("db operation","Customer " + customer + " saved successfully");
-                            else Log.e("db error","failed to insert customer " + customer + " into database");
-                            switchPage(customer);
-
-                        }else{
-                            Toast.makeText(MainActivity.this, "Invalid input data.", Toast.LENGTH_SHORT).show();
-                        }
+        loginBtn.setOnClickListener(view -> {
+            String phone = phoneEditText.getText().toString();
+            if(phone != null && phone.matches("\\d{9}")){
+                if(!register) {
+                    Customer customer = getCustomerByPhone(phone);
+                    if (customer.getPhoneNumber() != null) {
+                        Log.i("customer details", customer.toString());
+                        switchPage(customer);
+                    } else {
+                        loginBtn.setText("Register");
+                        nameEditText.setVisibility(VISIBLE);
+                        addressEditText.setVisibility(VISIBLE);
+                        cityEditText.setVisibility(VISIBLE);
+                        register = true;
                     }
-                }else{
-                    Toast.makeText(MainActivity.this, "Please insert your phone number in correct format.", Toast.LENGTH_SHORT).show();
-                    phoneEditText.setText("");
+                }else {
+                    String name = nameEditText.getText().toString();
+                    String address = addressEditText.getText().toString();
+                    String city = cityEditText.getText().toString();
+                    if(name.length() > 2 && address.length() > 4 && city.length() > 2){
+                        Customer customer = new Customer(phone,name,address + "/" + city);
+                        boolean success = addCutomer(customer);
+                        if(success)Log.i("db operation","Customer " + customer + " saved successfully");
+                        else Log.e("db error","failed to insert customer " + customer + " into database");
+                        switchPage(customer);
+
+                    }else{
+                        Toast.makeText(MainActivity.this, "Invalid input data.", Toast.LENGTH_SHORT).show();
+                    }
                 }
+            }else{
+                Toast.makeText(MainActivity.this, "Please insert your phone number in correct format.", Toast.LENGTH_SHORT).show();
+                phoneEditText.setText("");
             }
         });
 

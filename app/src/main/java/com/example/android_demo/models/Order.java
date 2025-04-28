@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Locale;
 
@@ -95,7 +94,7 @@ public class Order implements Parcelable {
     }
 
     // Creator field to regenerate the object from a Parcel
-    public static final Creator<Order> CREATOR = new Creator<Order>() {
+    public static final Creator<Order> CREATOR = new Creator<>() {
         @Override
         public Order createFromParcel(Parcel in) {
             Order order = new Order();

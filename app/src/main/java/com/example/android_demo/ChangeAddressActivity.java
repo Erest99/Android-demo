@@ -9,9 +9,6 @@ import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.android_demo.models.Customer;
 import com.example.android_demo.models.Order;
@@ -35,46 +32,43 @@ public class ChangeAddressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_changeaddress);
 
         orders = getIntent().getParcelableArrayListExtra("orders");
-        customer = (Customer) getIntent().getParcelableExtra("customer");
+        customer = getIntent().getParcelableExtra("customer");
         old = customer;
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
+        try (DataBaseHelper dataBaseHelper = new DataBaseHelper(this)) {
 
-        nameEditText = findViewById(R.id.nameEditText2);
-        addressEditText = findViewById(R.id.addressEditText2);
-        cityEditText = findViewById(R.id.cityEditText2);
-        backBtn = findViewById(R.id.backBtn2);
-        confirmBtn = findViewById(R.id.confirmBtn2);
+            nameEditText = findViewById(R.id.nameEditText2);
+            addressEditText = findViewById(R.id.addressEditText2);
+            cityEditText = findViewById(R.id.cityEditText2);
+            backBtn = findViewById(R.id.backBtn2);
+            confirmBtn = findViewById(R.id.confirmBtn2);
 
-        nameEditText.setText(customer.getName());
-        addressEditText.setText(customer.getAddress().split("/")[0]);
-        cityEditText.setText(customer.getAddress().split("/")[1]);
+            nameEditText.setText(customer.getName());
+            addressEditText.setText(customer.getAddress().split("/")[0]);
+            cityEditText.setText(customer.getAddress().split("/")[1]);
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            backBtn.setOnClickListener(view -> {
                 Intent intent = new Intent(ChangeAddressActivity.this, MenuActivity.class);
                 intent.putExtra("customer", old);
                 intent.putParcelableArrayListExtra("orders", new ArrayList<>(orders));
                 startActivity(intent);
-            }
-        });
+            });
 
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            confirmBtn.setOnClickListener(view -> {
                 customer.setName(nameEditText.getText().toString());
-                customer.setAddress(addressEditText.getText().toString()+"/"+cityEditText.getText().toString());
+                customer.setAddress(addressEditText.getText().toString() + "/" + cityEditText.getText().toString());
                 boolean success = dataBaseHelper.updateCustomer(customer);
-                if(success){
+                if (success) {
                     Log.i("db operation", "Customer successfully updated");
                     Intent intent = new Intent(ChangeAddressActivity.this, MenuActivity.class);
                     intent.putExtra("customer", customer);
                     intent.putParcelableArrayListExtra("orders", new ArrayList<>(orders));
                     startActivity(intent);
-                }else{
+                } else {
                     Log.e("db operation", "Couldnt update the customer");
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
